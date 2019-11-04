@@ -1,0 +1,69 @@
+from app.core.aws import ec2
+import argparse
+import time
+
+
+def check_instance_state(instance):
+    return instance.state['Name']
+
+
+def get_instance_name(instance):
+    return [tag['Value'] for tag in instance.tags if tag['Key'] == 'Name'][0]
+
+
+def all_instances():
+    return {get_instance_name(i): i for i in ec2.instances.all()}
+
+
+def start_instance(instance):
+    if check_instance_state(instance) == 'running':
+        print('Instance is already running.')
+        return
+    print(f'starting instance {get_instance_name(instance)}...')
+
+
+def stop_instance(instance):
+    if check_instance_state(instance) == 'stopped':
+        print('Instance has already been stopped.')
+        return
+    elif check_instance_state(instance) != 'running':
+        print('Instance is already in a state of flux. Try again shortly.')
+        return
+
+    print(f'Stopping instance {get_instance_name(instance)}...')
+
+
+def get_instance(instance_name):
+    try:
+        instance = all_instances().get(instance_name)
+        return instance
+    except Exception as e:
+        print(f'Unable to get instance {instance_name} - \n{e}')
+
+
+def process_action(state):
+    actions = {
+        'start': start_instance,
+        'stop': stop_instance,
+    }
+    return actions[state.lower()]
+
+
+def action_instance(instance_name, state):
+    instance = get_instance(instance_name)
+    if not instance:
+        print(f'Instance {instance_name} does not exist.')
+        return
+    print(f'Found instance {instance_name}...')
+    action = process_action(state)
+    action(instance)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('instance_name', help='Name of the ec2 instance')
+    parser.add_argument('state', choices=['start', 'stop'], help='START or STOP instance')
+
+    args = parser.parse_args()
+    action_instance(**vars(args))
+
