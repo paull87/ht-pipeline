@@ -7,6 +7,14 @@ def check_instance_state(instance):
     return instance.state['Name']
 
 
+def monitor_instance_state(instance, expected_state):
+    current_state = check_instance_state(instance)
+    while expected_state != current_state:
+        print(f'{get_instance_name(instance)} is {current_state}...')
+        current_state = check_instance_state(instance)
+        time.sleep(5)
+
+
 def get_instance_name(instance):
     return [tag['Value'] for tag in instance.tags if tag['Key'] == 'Name'][0]
 
@@ -19,7 +27,10 @@ def start_instance(instance):
     if check_instance_state(instance) == 'running':
         print('Instance is already running.')
         return
-    print(f'starting instance {get_instance_name(instance)}...')
+    print(f'Starting instance {get_instance_name(instance)}...')
+    instance.start()
+    #monitor_instance_state(instance, 'running')
+    print('Instance started!')
 
 
 def stop_instance(instance):
@@ -29,8 +40,10 @@ def stop_instance(instance):
     elif check_instance_state(instance) != 'running':
         print('Instance is already in a state of flux. Try again shortly.')
         return
-
     print(f'Stopping instance {get_instance_name(instance)}...')
+    instance.stop()
+    #monitor_instance_state(instance, 'stopped')
+    print('Instance stopped!')
 
 
 def get_instance(instance_name):
