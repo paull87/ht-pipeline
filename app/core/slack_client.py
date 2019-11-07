@@ -1,6 +1,6 @@
 import slack
 import ssl
-from app.settings.envs import SLACK_TOKEN
+from app.settings.secrets import SLACK_TOKEN
 
 
 ssl_context = ssl.create_default_context()
@@ -10,8 +10,11 @@ slack_client = slack.WebClient(token=SLACK_TOKEN, ssl=ssl_context)
 
 
 def send_message(channel, message):
-    return slack_client.chat_postMessage(channel=channel, text=message)
+    try:
+        return slack_client.chat_postMessage(channel=channel, text=message)
+    except Exception as e:
+        print('Unable to send message via slack...')
 
 
 if __name__ == '__main__':
-    send_message('#pl-test', 'hello there')
+    send_message('#pl-test-2', 'hello there')
