@@ -1,10 +1,10 @@
 import sqlalchemy
 import pandas
 from contextlib import contextmanager
-from app.settings.envs import LON_SQL_03
+from app.settings.envs import LON_SQL_03, LON_SQL_02_SQLCEN
 
 connection_strings = {
-    'sqlserver': 'mssql+pyodbc://{server_name}/{db_name}?driver=SQL+Server'#'driver={{SQL Server}};server={server_name};database={db_name};trusted_connection=true'
+    'sqlserver': 'mssql+pyodbc://{server_name}/{db_name}?driver=SQL+Server'
 }
 
 
@@ -46,6 +46,11 @@ class SQLQueryRunner:
 
 def lon_sql_03_runner():
     connection = SQLConnection('sqlserver', LON_SQL_03, 'master')
+    return SQLQueryRunner(connection)
+
+
+def lon_sql_02_sqlcen_runner():
+    connection = SQLConnection('sqlserver', LON_SQL_02_SQLCEN, 'master')
     return SQLQueryRunner(connection)
 
 
