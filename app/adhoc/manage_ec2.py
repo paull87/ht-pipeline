@@ -1,7 +1,8 @@
 from app.core.aws import ec2
+from app.core.slack_client import send_message
+from app.settings.envs import DATA_ENGINEERING_CHANNEL
 import argparse
 import time
-
 
 def check_instance_state(instance):
     return instance.state['Name']
@@ -30,6 +31,7 @@ def start_instance(instance):
     print(f'Starting instance {get_instance_name(instance)}...')
     instance.start()
     #monitor_instance_state(instance, 'running')
+    send_message(DATA_ENGINEERING_CHANNEL, f'EC2 instance {get_instance_name(instance)} has been started.')
     print('Instance started!')
 
 
@@ -43,6 +45,7 @@ def stop_instance(instance):
     print(f'Stopping instance {get_instance_name(instance)}...')
     instance.stop()
     #monitor_instance_state(instance, 'stopped')
+    send_message(DATA_ENGINEERING_CHANNEL, f'EC2 instance {get_instance_name(instance)} has been stopped.')
     print('Instance stopped!')
 
 
