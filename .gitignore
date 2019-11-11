@@ -51,6 +51,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+settings/secrets
+adhoc_files/
 
 # mkdocs documentation
 /site
