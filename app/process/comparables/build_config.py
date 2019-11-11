@@ -245,9 +245,3 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     process_action(**vars(args))
-    #print(secondary_rental_client(672))
-    #build_config('20191101', 80, 672, 672, True, False)
-
-    #show_config()
-
-    #run_build('Test November build', False, False)
