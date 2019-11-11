@@ -19,7 +19,6 @@ sns = boto3.client(
 
 def publish_sns(command, payload):
     topic_arn = f'arn:aws:sns:{REGION}:{ACCOUNT_ID}:{command}'
-    print(json.dumps(payload))
     try:
         response = sns.publish(
             TopicArn=topic_arn,
