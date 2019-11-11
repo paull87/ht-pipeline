@@ -1,7 +1,7 @@
 import sqlalchemy
 import pandas
 from contextlib import contextmanager
-from app.settings.envs import LON_SQL_03, LON_SQL_02_SQLCEN
+from app.settings.envs import LON_SQL_03, LON_SQL_02_SQLCEN, LON_SQL_04
 
 connection_strings = {
     'sqlserver': 'mssql+pyodbc://{server_name}/{db_name}?driver=SQL+Server'
@@ -54,14 +54,16 @@ def lon_sql_02_sqlcen_runner():
     return SQLQueryRunner(connection)
 
 
+def lon_sql_04_runner():
+    connection = SQLConnection('sqlserver', LON_SQL_04, 'master')
+    return SQLQueryRunner(connection)
+
+
 if __name__ == '__main__':
-    from app.settings.envs import LON_SQL_02_SQLCEN
-    odbc = 'sqlserver'
-    database = 'GDW3'
-    test_connection = SQLConnection(odbc, LON_SQL_02_SQLCEN, database)
-    query_runner = SQLQueryRunner(test_connection)
 
     query = 'SELECT * FROM [GDW3].[dbo].[tab_buildManifest]'
-    result = query_runner.read(query)
+    result = lon_sql_02_sqlcen_runner().read(query)
 
     print(result)
+
+    print(lon_sql_04_runner().read('SELECT name FROM sys.databases'))
