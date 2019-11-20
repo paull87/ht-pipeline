@@ -24,6 +24,7 @@ CONFIG_TEMPLATE = '''<buildConfiguration>
  <bulkTestIdSecondaryRentalClient>{secondary_rental_client}</bulkTestIdSecondaryRentalClient>
  <rebuildCandidate>{rebuild}</rebuildCandidate>
  <updateCandidate>{update}</updateCandidate>
+ <generateGeoService>{geo_service}</generateGeoService>
 </buildConfiguration>'''
 
 bulk_test_id_sql = '''
@@ -91,7 +92,7 @@ def secondary_rental_client(version_number):
     return get_bulk_test_id(version_number, 'RentalClient')
 
 
-def build_config(as_of_date, os_version, based_on_version, compared_to_version, rebuild, update):
+def build_config(as_of_date, os_version, based_on_version, compared_to_version, rebuild, update, geo_service):
     config = CONFIG_TEMPLATE.format(
         as_of_date=as_of_date,
         os_version=os_version,
@@ -102,7 +103,8 @@ def build_config(as_of_date, os_version, based_on_version, compared_to_version, 
         secondary_client=secondary_client(compared_to_version),
         secondary_rental_client=secondary_rental_client(compared_to_version),
         rebuild=int(rebuild),
-        update=int(update)
+        update=int(update),
+        geo_service=int(geo_service),
     )
     with open(CONFIG_FILE, 'w') as file:
         file.write(config)
@@ -152,12 +154,14 @@ def process_action(
         os_version,
         based_on_version,
         compared_to_version,
-        rebuild, update,
+        rebuild,
+        update,
+        geo_service,
         build_description,
-        is_release_build
+        is_release_build,
 ):
     if action == 'build':
-        build_config(as_of_date, os_version, based_on_version, compared_to_version, rebuild, update)
+        build_config(as_of_date, os_version, based_on_version, compared_to_version, rebuild, update, geo_service )
     elif action == 'show':
         show_config()
     elif action == 'run':
@@ -223,6 +227,15 @@ if __name__ == '__main__':
         dest='update',
         type=str_to_bool,
         help='Whether comps build is update or not',
+        required=False
+    )
+
+    parser.add_argument(
+        '-g',
+        '--geo_service',
+        dest='geo_service',
+        type=str_to_bool,
+        help='Whether comps build requires a geo service update',
         required=False
     )
 
