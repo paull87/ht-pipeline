@@ -6,6 +6,9 @@ import datetime
 from requests_ntlm import HttpNtlmAuth
 from app.settings.secrets import USER_NAME, PASSWORD
 from app.core.sql import lon_sql_06_geoindexapp_runner
+from app.process.geo_index.db_versions import geo_index_dbs
+
+geo_dbs = geo_index_dbs()
 
 # Used as default if no month  is passed to the process
 current_month = datetime.datetime.now().strftime('%Y%m')
@@ -121,15 +124,15 @@ def download_all_reports(month=current_month):
             # TODO: Take out the hardcoded numbers.
             destination_file=destination_file,
             geo_level=geo_level,
-            curr_allgeos=1283,
-            prev_allgeos=1280,
-            curr_20cc=1282,
-            prev_20cc=1279,
-            curr_pcl=1281,
-            prev_pcl=1278,
+            curr_allgeos=geo_dbs['allgeos'].current,
+            prev_allgeos=geo_dbs['allgeos'].previous,
+            curr_20cc=geo_dbs['20cc'].current,
+            prev_20cc=geo_dbs['20cc'].previous,
+            curr_pcl=geo_dbs['pcl'].current,
+            prev_pcl=geo_dbs['pcl'].previous,
         )
         if geo_level == 'PCDPCA':
-            data = get_extra_report_data(1283)
+            data = get_extra_report_data(geo_dbs['allgeos'].current)
             append_extra_data_to_report(destination_file, data)
 
 
