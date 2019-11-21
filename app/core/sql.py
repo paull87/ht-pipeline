@@ -1,7 +1,7 @@
 import sqlalchemy
 import pandas
 from contextlib import contextmanager
-from app.settings.envs import LON_SQL_03, LON_SQL_02_SQLCEN, LON_SQL_04
+from app.settings.envs import LON_SQL_03, LON_SQL_02_SQLCEN, LON_SQL_04, LON_SQL_01_SOURCEBUILD, LON_SQL_06_GEOINDEXAPP
 
 connection_strings = {
     'sqlserver': 'mssql+pyodbc://{server_name}/{db_name}?driver=SQL+Server'
@@ -44,6 +44,11 @@ class SQLQueryRunner:
             return self._executor(con=conn, sql=sql_query)
 
 
+def lon_sql_01_sourcebuild_runner():
+    connection = SQLConnection('sqlserver', LON_SQL_01_SOURCEBUILD, 'master')
+    return SQLQueryRunner(connection)
+
+
 def lon_sql_03_runner():
     connection = SQLConnection('sqlserver', LON_SQL_03, 'master')
     return SQLQueryRunner(connection)
@@ -51,6 +56,11 @@ def lon_sql_03_runner():
 
 def lon_sql_02_sqlcen_runner():
     connection = SQLConnection('sqlserver', LON_SQL_02_SQLCEN, 'master')
+    return SQLQueryRunner(connection)
+
+
+def lon_sql_06_geoindexapp_runner():
+    connection = SQLConnection('sqlserver', LON_SQL_06_GEOINDEXAPP, 'master')
     return SQLQueryRunner(connection)
 
 
