@@ -25,7 +25,7 @@ file `app\settings\secrets.py` with the following -
 ```python
 # AWS
 REGION = 'ht aws region'
-ACCOUNT_ID = 'ht aws region'
+ACCOUNT_ID = 'ht aws account id'
 STAGE = 'dev'
 PL_AWS_ACCESS_KEY = 'get this from paul, until it is migrated over to ht'
 PL_SECRET_ACCESS_KEY = 'same as above'
