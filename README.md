@@ -3,6 +3,40 @@
 A repository for common commands and tasks carried out in day to day job.
 
 
+## Getting Started
+
+### Environment
+To get started using this repo, download/clone it to your workspace. You will
+need to install the pip requirements either to your standard python or to a dedicated
+virtual environment -
+
+```
+pip install -r requirements.txt
+```
+
+If you've used the virtual environment, you will need to activate that before you 
+can run any of the commands for it.
+
+### Secrets
+There are a number of secret variables that will need to be created in order for the
+commands to access some of the different environments. You will need to amend the 
+file `app\settings\secrets.py` with the following -
+
+```python
+# AWS
+REGION = 'ht aws region'
+ACCOUNT_ID = 'ht aws region'
+STAGE = 'dev'
+PL_AWS_ACCESS_KEY = 'get this from paul, until it is migrated over to ht'
+PL_SECRET_ACCESS_KEY = 'same as above'
+
+# Windows Authentication
+USER_NAME = 'your workspace domain/username'
+PASSWORD = 'your workspace password'
+```
+
+Once that is set up you can start using the application features as shown below.
+
 #### Manage EC2 Instances
 
 It can be common to start and stop instances of AWS EC2 instances so there are some common commands that can be 
@@ -93,7 +127,8 @@ python -m app.process.comparables.build_config --action build ^
 --based_on_version 672 ^
 --compared_to_version 672 ^
 --rebuild True ^
---update False
+--update False ^
+--geo_service False
 ```
 
 This will save a local version of the build configuration as well as output it to the console.
