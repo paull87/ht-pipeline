@@ -23,7 +23,7 @@ def upload_single_file(file_name, file_directory, month):
 
 def upload_files(month):
     """
-    Iterates over the particular months files and uplodas them to s3.
+    Iterates over the particular months files and uploads them to s3.
     Where a month is not given, the current month will be used.
     """
     source_directory = os.path.join(SOURCE_FOLDER, month)
