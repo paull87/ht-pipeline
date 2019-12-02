@@ -11,8 +11,9 @@ def download_csv_file():
 
 def write_csv_file():
     with open(DESTINATION_FILE, 'wb') as csv_file:
-        raw_data = download_csv_file()
         print('downloading file...')
+        raw_data = download_csv_file()
+        print('writing file...')
         csv_file.write(raw_data.content)
         print('New csv file created.')
 
