@@ -1,7 +1,7 @@
-from app.adhoc.manage_ec2 import check_instance_state, all_instances, instance_running_hours
+from app.adhoc.manage_ec2 import check_instance_state, all_instances, check_instance_running_time
 import pandas
 
-EC2_STATE_DESTINATION = r'S:\HOMETRACK_ROOT\Techdev\Reports\ec2_states.csv'
+EC2_STATE_DESTINATION = r'\\property.local\shared\HOMETRACK_ROOT\Techdev\Reports\ec2_states.csv'
 
 
 def states_df():
@@ -15,7 +15,7 @@ def states_to_csv():
 
 def current_instance_states():
     for instance_name, instance, in all_instances().items():
-        yield(instance_name, check_instance_state(instance), instance_running_hours(instance))
+        yield(instance_name, check_instance_state(instance), str(check_instance_running_time(instance)))
 
 
 if __name__ == '__main__':

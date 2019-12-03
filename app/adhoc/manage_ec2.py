@@ -12,19 +12,10 @@ def check_instance_state(instance):
 
 
 def check_instance_running_time(instance):
-    current_time = datetime.datetime.utcnow()
     if check_instance_state(instance) == 'running':
-        return current_time - instance.launch_time.replace(tzinfo=None)
+        return instance.launch_time.replace(tzinfo=None)
     else:
-        return current_time - current_time
-
-
-def instance_running_hours(instance):
-    running_time = check_instance_running_time(instance)
-    days = running_time.days
-    hours, remainder = divmod(running_time.seconds, 3600)
-    minutes, _ = divmod(remainder, 60)
-    return f'{(days * 24) + hours}:{minutes:02}'
+        return None
 
 
 def monitor_instance_state(instance, expected_state):
