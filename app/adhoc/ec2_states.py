@@ -1,7 +1,7 @@
 from app.adhoc.manage_ec2 import check_instance_state, all_instances, check_instance_running_time
 import pandas
 
-EC2_STATE_DESTINATION = r'\\property.local\shared\HOMETRACK_ROOT\Techdev\Reports\ec2_states.csv'
+EC2_STATE_DESTINATION = r'D:\Reports\ec2_states.csv'
 
 
 def states_df():
