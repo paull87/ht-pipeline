@@ -1,6 +1,6 @@
 import re
 import os
-from app.core.remote_windows import RemoteWindow
+from app.core.remote_windows import RemoteSession
 from app.settings import envs, secrets
 
 
@@ -20,7 +20,7 @@ def find_backups(file_regex, files):
 
 
 if __name__ == '__main__':
-    remote_lon_sql_04 = RemoteWindow(envs.LON_SQL_04, (secrets.USER_NAME, secrets.PASSWORD))
+    remote_lon_sql_04 = RemoteSession(envs.LON_SQL_04, (secrets.USER_NAME, secrets.PASSWORD))
 
     print(remote_lon_sql_04.ls(envs.LON_SQL_04_DB_BACKUPS))
 

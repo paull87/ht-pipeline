@@ -2,7 +2,7 @@ import winrm
 from app.core.logging import logger
 
 
-class RemoteWindow:
+class RemoteSession:
     def __init__(self, server, auth):
         self._server = server
         self._auth = auth
