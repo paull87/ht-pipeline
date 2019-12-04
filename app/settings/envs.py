@@ -36,3 +36,8 @@ GEO_INDEX_QA_REPORT_URL = (
 GEO_INDEX_QA_REPORT_DIRECTORY = r'D:\Users\plucas\Downloads\{month}'
 GEO_INDEX_QA_REPORT_FILE_FORMAT = 'GeographyIndexQA_{geo_level}.xlsx'
 GEO_LEVELS = ['UK', 'LA', 'GOR', 'PCD', 'PCA', 'PCDPCA', 'Cities']
+
+
+# NHBC
+NHBC_BUCKET = 'nhbc-eu-west-2-318016054559'
+NHBC_SOURCE_DIR = 'S:\\HOMETRACK_ROOT\\Techdev\\Raw Data\\020_NHBCNewBuildDataset\\data'
