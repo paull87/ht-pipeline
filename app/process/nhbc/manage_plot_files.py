@@ -1,5 +1,6 @@
 from app.core.aws import s3
 from app.settings.envs import NHBC_BUCKET, NHBC_SOURCE_DIR
+from app.core.logging import logger
 import datetime
 import os
 import argparse
@@ -16,7 +17,7 @@ TRANSFORMED_FILE_NAME = 'Plots.csv'
 def upload_single_file(file_name, file_directory, month):
     """Uploads the given file/directory to the nhbc raw bucket for the given month."""
     full_path = os.path.join(file_directory, file_name)
-    print(f'Uploading file {full_path}...')
+    logger.info(f'Uploading file {full_path}...')
     s3.upload_file(full_path, NHBC_BUCKET, FILENAME_FMT.format(month=month, filename=file_name))
 
 
@@ -28,7 +29,7 @@ def upload_files(month):
     source_directory = os.path.join(NHBC_SOURCE_DIR, month)
     for source_file in os.listdir(source_directory):
         upload_single_file(source_file, source_directory, month)
-    print('Upload complete.')
+    logger.info('Upload complete.')
 
 
 def find_transformed_file(month):
@@ -36,18 +37,22 @@ def find_transformed_file(month):
     found_files = s3.list_objects_v2(
         Bucket=NHBC_BUCKET, Prefix=TRANSFORMED_FILE_PREFIX.format(month=month_format)
     )['Contents']
+
     if len(found_files) == 1:
+        logger.info(f'Found file {found_files[0]["Key"]}')
         return found_files[0]['Key']
+    logger.warning(f'No file found with prefix {TRANSFORMED_FILE_PREFIX.format(month=month_format)}')
 
 
 def download_files(month):
     """Iterates over the transformed files and downloads the plot """
     transformed_key = find_transformed_file(month)
     if not transformed_key:
-        print('No transformed file found...')
-        return
+        raise Exception('No transformed file found...')
+    logger.info(f'Downloading transformed file {transformed_key}...')
     with open(os.path.join(NHBC_SOURCE_DIR, month, TRANSFORMED_FILE_NAME), 'wb') as data:
         s3.download_fileobj(NHBC_BUCKET, transformed_key, data)
+    logger.info(f'Download complete.')
 
 
 def process_action(state):
