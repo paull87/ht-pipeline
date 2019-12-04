@@ -1,4 +1,5 @@
 import winrm
+from app.core.logging import logger
 
 
 class RemoteWindow:
@@ -15,7 +16,11 @@ class RemoteWindow:
 
     def ls(self, directory=''):
         """Runs the equivalent ls or dir for a remote connection for the given directory."""
+        cmd = f'DIR {directory} /B'
+        logger.info(f'running {cmd} against {self._server}')
         result = self.run_cmd(f'DIR {directory} /B')
+        if result.std_err:
+            logger.error(f'Error running {cmd} against {self._server}: {result.std_err.decode("utf-8")}')
         return split_files(result.std_out.decode('utf-8'))
 
     def copy(self, target, destination):
