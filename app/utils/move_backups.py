@@ -20,9 +20,12 @@ def find_backups(file_regex, files):
 
 
 if __name__ == '__main__':
-    raw_comps_regex = r'^rawComparables_.+_\d\d\d\d_\d\d_\d\d.bak$'
     remote_lon_sql_04 = RemoteWindow(envs.LON_SQL_04, (secrets.USER_NAME, secrets.PASSWORD))
 
-    print(remote_lon_sql_04.ls(envs.LON_SQL_01_RAW_COMPS_BACKUPS))
+    print(remote_lon_sql_04.ls(envs.LON_SQL_04_DB_BACKUPS))
+
+    raw_comps_regex = envs.RAW_COMPS_REGEX.format(version_number=678)
+
+    print(list(find_backups(raw_comps_regex, remote_lon_sql_04.ls(envs.LON_SQL_04_DB_BACKUPS))))
 
     #copy_backups(remote_lon_sql_04, raw_comps_regex, envs.LON_SQL_04_DB_BACKUPS, envs.LON_SQL_01_RAW_COMPS_BACKUPS)

@@ -16,8 +16,23 @@ ADHOC_FILE_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'adho
 DATA_ENGINEERING_CHANNEL = '#ht-data-engineers'
 
 
-# File Directories
+# Backup File Directories
 LON_SQL_04_DB_BACKUPS = 'D:\MSSQL\BACKUP'
 
 LON_SQL_01_RAW_COMPS_BACKUPS = r'\\lon-sql-01\DBRepository\rawComparables\2019'
 LON_SQL_01_COMPS_BACKUPS = r'\\lon-sql-01\DBRepository\comparables\2019'
+
+RAW_COMPS_REGEX = r'^rawComparables_v?{version_number}_\d\d\d\d_\d+_\d+.bak$'
+
+
+# Geo Index
+GEO_INDEX_QA_REPORT_URL = (
+    'http://lon-sql-02/ReportServer/Pages/ReportViewer.aspx?/GeographyIndexQA/GeographyIndexQA&GeoLevel='
+    '{geo_level}&CurrentGeoIndexBuildRunIdAllGeos={curr_allgeos}&CurrentGeoIndexBuildRunId20CC={curr_20cc}'
+    '&PreviousGeoIndexBuildRunId20CC={prev_20cc}&CurrentGeoIndexBuildRunIdPCL={curr_pcl}&PreviousGeoIndexBuildRunIdPCL='
+    '{prev_pcl}&PreviousGeoIndexBuildRunIdAllGeos={prev_allgeos}&rs:Format=EXCELOPENXML'
+)
+
+GEO_INDEX_QA_REPORT_DIRECTORY = r'D:\Users\plucas\Downloads\{month}'
+GEO_INDEX_QA_REPORT_FILE_FORMAT = 'GeographyIndexQA_{geo_level}.xlsx'
+GEO_LEVELS = ['UK', 'LA', 'GOR', 'PCD', 'PCA', 'PCDPCA', 'Cities']
