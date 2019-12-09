@@ -1,6 +1,6 @@
 from app.core.aws import s3
 from app.settings.envs import NHBC_BUCKET, NHBC_SOURCE_DIR
-from app.core.logging import logger
+from app.core.logger import logger
 import datetime
 import os
 import argparse
