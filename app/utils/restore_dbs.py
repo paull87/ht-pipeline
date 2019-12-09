@@ -1,4 +1,3 @@
-from app.utils import build_versions
 from app.core.sql import sql_runners
 from app.utils.move_backups import get_latest_backup, copy_backups
 from app.settings.envs import BACKUP_DIRS, BACKUP_REGEXS, SERVERS
