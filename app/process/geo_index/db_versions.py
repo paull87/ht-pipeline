@@ -45,3 +45,7 @@ def database_versions(databases):
     previous = get_database_version(databases[0])
     current = get_database_version(databases[1])
     return GeoDB(current=current, previous=previous)
+
+
+if __name__ == '__main__':
+    print(geo_index_dbs())
