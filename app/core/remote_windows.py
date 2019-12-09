@@ -1,5 +1,5 @@
 import winrm
-from app.core.logging import logger
+from app.core.logger import logger
 
 
 class RemoteSession:
