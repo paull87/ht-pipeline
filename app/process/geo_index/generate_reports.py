@@ -5,25 +5,13 @@ import openpyxl
 import datetime
 from requests_ntlm import HttpNtlmAuth
 from app.settings.secrets import USER_NAME, PASSWORD
+from app.settings.envs import GEO_LEVELS, GEO_INDEX_QA_REPORT_DIRECTORY, GEO_INDEX_QA_REPORT_FILE_FORMAT, GEO_INDEX_QA_REPORT_URL
 from app.core.sql import lon_sql_06_geoindexapp_runner
-from app.process.geo_index.db_versions import geo_index_dbs
+from app.core.logger import logger
 
-geo_dbs = geo_index_dbs()
 
 # Used as default if no month  is passed to the process
-current_month = datetime.datetime.now().strftime('%Y%m')
-
-REPORT_URL = (
-    'http://lon-sql-02/ReportServer/Pages/ReportViewer.aspx?/GeographyIndexQA/GeographyIndexQA&GeoLevel='
-    '{geo_level}&CurrentGeoIndexBuildRunIdAllGeos={curr_allgeos}&CurrentGeoIndexBuildRunId20CC={curr_20cc}'
-    '&PreviousGeoIndexBuildRunId20CC={prev_20cc}&CurrentGeoIndexBuildRunIdPCL={curr_pcl}&PreviousGeoIndexBuildRunIdPCL='
-    '{prev_pcl}&PreviousGeoIndexBuildRunIdAllGeos={prev_allgeos}&rs:Format=EXCELOPENXML'
-)
-
-DESTINATION_DIRECTORY = r'D:\Users\plucas\Downloads\{month}'
-DESTINATION_FILE = 'GeographyIndexQA_{geo_level}.xlsx'
-GEO_LEVELS = ['UK', 'LA', 'GOR', 'PCD', 'PCA', 'PCDPCA', 'Cities']
-
+current_month = datetime.datetime.now().strftime('%Y-%m')
 
 PCDPDA_EXTRA_SQL = '''
 WITH cte as
@@ -69,7 +57,7 @@ def get_report_file(url):
 
 def download_report(destination_file, geo_level, curr_allgeos, prev_allgeos, curr_20cc, prev_20cc, curr_pcl, prev_pcl):
     """Downloads the report for the given params and saves it the given destaination file."""
-    url = REPORT_URL.format(
+    url = GEO_INDEX_QA_REPORT_URL.format(
         geo_level=geo_level.replace(' ', '+'),
         curr_allgeos=curr_allgeos,
         prev_allgeos=prev_allgeos,
@@ -78,8 +66,8 @@ def download_report(destination_file, geo_level, curr_allgeos, prev_allgeos, cur
         curr_pcl=curr_pcl,
         prev_pcl=prev_pcl,
     )
+    logger.info(f'downloading report {url}')
     with open(destination_file, 'wb') as report_file:
-        print(f'Downloading {geo_level} report.')
         raw_data = get_report_file(url)
         report_file.write(raw_data.content)
 
@@ -106,20 +94,22 @@ def append_extra_data_to_report(filename, data):
 
 def create_directory(month):
     """Formats the destination directory and creates it if it doesn't exist."""
-    directory = DESTINATION_DIRECTORY.format(month=month)
+    directory = GEO_INDEX_QA_REPORT_DIRECTORY.format(month=month)
     if not os.path.isdir(directory):
+        logger.info(f'creating directory {directory}')
         os.mkdir(directory)
     return directory
 
 
-def download_all_reports(month=current_month):
+def download_all_reports(geo_dbs, month=current_month):
     """
     Loops through each geo level and downloads the report.
     For the PCDPCA report, the required extra data is appended to it.
     """
     directory = create_directory(month=month)
     for geo_level in GEO_LEVELS:
-        destination_file = os.path.join(directory, DESTINATION_FILE.format(geo_level=geo_level))
+        logger.info(f'creating report for {geo_level}...')
+        destination_file = os.path.join(directory, GEO_INDEX_QA_REPORT_FILE_FORMAT.format(geo_level=geo_level))
         download_report(
             # TODO: Take out the hardcoded numbers.
             destination_file=destination_file,
@@ -132,11 +122,15 @@ def download_all_reports(month=current_month):
             prev_pcl=geo_dbs['pcl'].previous,
         )
         if geo_level == 'PCDPCA':
+            logger.info(f'Adding extra data for PCDPCA')
             data = get_extra_report_data(geo_dbs['allgeos'].current)
             append_extra_data_to_report(destination_file, data)
 
 
 if __name__ == '__main__':
-    download_all_reports()
+    from app.process.geo_index.db_versions import geo_index_dbs
+
+    geo_dbs = geo_index_dbs()
+    download_all_reports(geo_dbs=geo_dbs, month='2019-11')
 
 
