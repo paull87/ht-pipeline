@@ -4,7 +4,7 @@ from pyspark.sql import SQLContext, Window
 from pyspark.sql import functions as func
 from app.core.spark import get_spark_context
 from app.settings.envs import NHBC_BUCKET
-from app.core.logging import logger
+from app.core.logger import logger
 
 
 SPARK_CONTEXT = get_spark_context("2")
