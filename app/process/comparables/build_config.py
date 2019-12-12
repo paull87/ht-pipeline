@@ -4,6 +4,36 @@ import argparse
 from app.core.sql import lon_sql_02_sqlcen_runner
 from app.settings.envs import ADHOC_FILE_PATH
 
+'''
+Example usage -
+
+Build config -
+
+python -m app.process.comparables.build_config --action build ^
+--asof 20191201 ^
+--os_version 84 ^
+--based_on_version 678 ^
+--compared_to_version 680 ^
+--rebuild False ^
+--update False ^
+--geo_service False
+
+
+Show current config -
+
+python -m app.process.comparables.build_config -a show
+
+
+Run current config -
+
+python -m app.process.comparables.build_config --action run ^
+--description "Comps Build - Dec 2019 - Dec Enhancement Capital IX, Rental NRA and Neigh" ^
+--is_release False
+
+'''
+
+
+
 # Used as default if no month  is passed to the process
 current_month = datetime.datetime.now().strftime('%Y%m%d')
 
@@ -92,6 +122,19 @@ def secondary_rental_client(version_number):
     return get_bulk_test_id(version_number, 'RentalClient')
 
 
+def get_bulk_test_ids(current_version, compare_version):
+    return {
+        'primary_client': secondary_client(current_version),
+        'primary_capital': secondary_capital(current_version),
+        'primary_rental': secondary_rental(current_version),
+        'primary_rental_client': secondary_rental_client(current_version),
+        'secondary_client': secondary_client(compare_version),
+        'secondary_capital': secondary_capital(compare_version),
+        'secondary_rental': secondary_rental(compare_version),
+        'secondary_rental_client': secondary_rental_client(compare_version),
+    }
+
+
 def build_config(as_of_date, os_version, based_on_version, compared_to_version, rebuild, update, geo_service):
     config = CONFIG_TEMPLATE.format(
         as_of_date=as_of_date,
@@ -143,7 +186,7 @@ def run_build(build_description, is_release_build, dry_run=False):
     if dry_run:
         print(sql)
     else:
-        #TODO: add sql run
+        # TODO: add sql run
         # Delete the config so it can't be accidentally used again.
         delete_config()
 
@@ -161,11 +204,11 @@ def process_action(
         is_release_build,
 ):
     if action == 'build':
-        build_config(as_of_date, os_version, based_on_version, compared_to_version, rebuild, update, geo_service )
+        build_config(as_of_date, os_version, based_on_version, compared_to_version, rebuild, update, geo_service)
     elif action == 'show':
         show_config()
     elif action == 'run':
-        run_build(build_description, is_release_build)
+        run_build(build_description, is_release_build, dry_run=True)
 
 
 if __name__ == '__main__':
