@@ -38,9 +38,16 @@ if __name__ == '__main__':
     remote_lon_sql_04 = RemoteSession(envs.LON_SQL_04, (secrets.USER_NAME, secrets.PASSWORD))
 
     print(remote_lon_sql_04.ls(envs.LON_SQL_04_DB_BACKUPS))
-
     raw_comps_regex = envs.RAW_COMPS_REGEX.format(version_number=678)
-
     print(list(find_backups(raw_comps_regex, remote_lon_sql_04.ls(envs.LON_SQL_04_DB_BACKUPS))))
 
-    #copy_backups(remote_lon_sql_04, raw_comps_regex, envs.LON_SQL_04_DB_BACKUPS, envs.LON_SQL_01_RAW_COMPS_BACKUPS)
+    backup = get_latest_backup(envs.LON_SQL_04, envs.LON_SQL_04_DB_BACKUPS, raw_comps_regex)
+    dir = os.path.join(envs.LON_SQL_04_DB_BACKUPS, backup)
+    print('modified date', remote_lon_sql_04.file_modified_date(dir))
+
+    copy_backups(
+        remote_server=envs.LON_SQL_04,
+        backup_regex=raw_comps_regex,
+        source_directory=envs.LON_SQL_01_RAW_COMPS_BACKUPS,
+        target_directory=envs.LON_SQL_04_DB_BACKUPS
+    )
