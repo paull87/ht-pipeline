@@ -56,6 +56,7 @@ BACKUP_DIRS = {
 RAW_COMPS_REGEX = r'^rawComparables_v?{version_number}_\d\d\d\d_\d+_\d+.bak$'
 NHBC_REGEX = r'^NHBC_v?{version_number}.bak$'
 OS_DATA_REGEX = r'^OS_Data_v?{version_number}.bak$'
+COMPS_REGEX = r'LON-SQL-04_Comparables_v?{version_number}_\d\d\d\d_\d+_\d+.bak'
 
 BACKUP_REGEXS = {
     'nhbc': NHBC_REGEX,
