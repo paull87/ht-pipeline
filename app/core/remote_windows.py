@@ -25,14 +25,14 @@ class RemoteSession:
         result = self.run_cmd(cmd)
         return split_files(result.std_out.decode('utf-8'))
 
-    def copy(self, target, destination):
+    def copy(self, source_file, destination):
         """Copies the given target file to the given target file/directory"""
-        if not self._check_file_changed(destination, target):
-            cmd = f'COPY {target} {destination}'
+        if not self._check_file_exists(destination, source_file):
+            cmd = f'COPY {source_file} {destination}'
             result = self.run_cmd(cmd)
             return result.status_code
         else:
-            logger.info(f'File {destination} already exists and was not copied')
+            logger.info(f'File {source_file} already exists in {destination} and was not copied')
 
     def delete_file(self, file):
         """Deletes the given target file."""
@@ -40,19 +40,12 @@ class RemoteSession:
         result = self.run_cmd(cmd)
         return result.status_code
 
-    def file_modified_date(self, file):
-        """Returns the modified date of a file."""
-        return False
-        # TODO: forfiles doesn't support UNC so have to find another way to get file date.
-        directory, file_name = os.path.split(file)
-        cmd = f'forfiles /P {directory} /M {file_name} /C "cmd /c echo @FDATE @FTIME"'
+    def _check_file_exists(self, destination, source_file):
+        file_name = os.path.basename(source_file)
+        target_file = os.path.join(destination, file_name)
+        cmd = f'dir {target_file}'
         result = self.run_cmd(cmd)
-        return result.std_out.decode('utf-8').strip()
-
-    def _check_file_changed(self, destination, target):
-        file_name = os.path.basename(destination)
-        target_file = os.path.join(target, file_name)
-        return self.file_modified_date(destination) == self.file_modified_date(target_file)
+        return result.std_err.decode("utf-8") != 'File Not Found'
 
 
 def split_files(file_string):

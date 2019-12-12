@@ -11,7 +11,7 @@ def copy_backups(remote_server, backup_regex, source_directory, target_directory
     for file in find_backups(backup_regex, files):
         logger.info(f'Copying file {file} to {target_directory}')
         session.copy(
-            target=os.path.join(source_directory, file),
+            source_file=os.path.join(source_directory, file),
             destination=target_directory,
         )
 
@@ -35,15 +35,7 @@ def get_latest_backup(server, source_directory, file_regex):
 
 
 if __name__ == '__main__':
-    remote_lon_sql_04 = RemoteSession(envs.LON_SQL_04, (secrets.USER_NAME, secrets.PASSWORD))
-
-    print(remote_lon_sql_04.ls(envs.LON_SQL_04_DB_BACKUPS))
     raw_comps_regex = envs.RAW_COMPS_REGEX.format(version_number=678)
-    print(list(find_backups(raw_comps_regex, remote_lon_sql_04.ls(envs.LON_SQL_04_DB_BACKUPS))))
-
-    backup = get_latest_backup(envs.LON_SQL_04, envs.LON_SQL_04_DB_BACKUPS, raw_comps_regex)
-    dir = os.path.join(envs.LON_SQL_04_DB_BACKUPS, backup)
-    print('modified date', remote_lon_sql_04.file_modified_date(dir))
 
     copy_backups(
         remote_server=envs.LON_SQL_04,
