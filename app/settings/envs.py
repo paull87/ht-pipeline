@@ -80,3 +80,38 @@ GEO_LEVELS = ['UK', 'LA', 'GOR', 'PCD', 'PCA', 'PCDPCA', 'Cities']
 # NHBC
 NHBC_BUCKET = 'nhbc-eu-west-2-318016054559'
 NHBC_SOURCE_DIR = 'S:\\HOMETRACK_ROOT\\Techdev\\Raw Data\\020_NHBCNewBuildDataset\\data'
+
+# Comps build reports
+# BULK_TEST_REPORT_DIRECTORY = (
+#     r'S:\HOMETRACK_ROOT\Hometrack\Analytics\Bulk_Tests\Comparables Build QA Reports\{month}\v{version}'
+# )
+BULK_TEST_REPORT_DIRECTORY = r'D:\Users\plucas\Downloads\{month}\v{version}'
+
+
+BULK_TEST_REPORTS = {
+    '1_CapitalHybridBulkTest_v{version}_{primary_capital}_{secondary_capital}.pdf': (
+        'http://lon-sql-02/ReportServer/Pages/ReportViewer.aspx?/CompsQA/realtimeBulkTest&'
+        'bulkTestIdSecondary={secondary_capital}&bulkTestIdPrimary={primary_capital}&rs%3AParameterLanguage=en-GB&'
+        'rs:Format=PDF'
+    ),
+    '2_RentalBulkTest_v{version}_{primary_rental}_{secondary_rental}.pdf': (
+        'http://lon-sql-02/ReportServer/Pages/ReportViewer.aspx?/CompsQA/realtimeBulkTestRental&'
+        'bulkTestIdSecondary={secondary_rental}&bulkTestIdPrimary={primary_rental}&rs%3AParameterLanguage=en-GB&'
+        'rs:Format=PDF'
+    ),
+    '3a_ClientBulkTest_v{version}_{primary_client}_{secondary_client}.pdf': (
+        'http://lon-sql-02/ReportServer/Pages/ReportViewer.aspx?/CompsQA/realtimeBulkTest&'
+        'bulkTestIdSecondary={secondary_client}&bulkTestIdPrimary={primary_client}&rs%3AParameterLanguage=en-GB&'
+        'rs:Format=PDF'
+    ),
+    '3b_ClientBulkTest_v{version}_{primary_client}_{secondary_client}.pdf': (
+        'http://lon-sql-02/ReportServer/Pages/ReportViewer.aspx?/CompsQA/realtimeBulkTestClient&'
+        'bulkTestIdSecondary={secondary_client}&bulkTestIdPrimary={primary_client}&rs%3AParameterLanguage=en-GB&'
+        'rs:Format=PDF'
+    ),
+    '5_RentalClientBulkTest_v{version}_{primary_rental_client}_{secondary_rental_client}.pdf': (
+        'http://lon-sql-02/ReportServer/Pages/ReportViewer.aspx?/CompsQA/realtimeBulkTestClientREntal&'
+        'bulkTestIdSecondary={secondary_rental_client}&bulkTestIdPrimary={primary_rental_client}&'
+        'rs%3AParameterLanguage=en-GB&rs:Format=PDF'
+    )
+}
