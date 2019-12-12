@@ -24,5 +24,5 @@ def restore_db(server, database, database_name, version, copy_file_from=None):
 
 
 if __name__ == '__main__':
-    restore_db('dev-sql-01', 'raw_comps', 'PL_TEST_raw_comps', 679)
-    #restore_db('lon-sql-06', 'os_data', 'PL_Test_os_80', 80, copy_from='lon-sql-01')
+    #restore_db('dev-sql-01', 'raw_comps', 'PL_TEST_raw_comps', 679)
+    restore_db('lon-sql-06', 'os_data', 'PL_Test_os_80', 80, copy_from='lon-sql-01')
