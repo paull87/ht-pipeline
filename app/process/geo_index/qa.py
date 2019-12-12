@@ -1,5 +1,6 @@
 from app.core.sql import lon_sql_06_geoindexapp_runner
 from app.process.geo_index.db_versions import geo_index_dbs
+from app.core.logger import logger
 
 COMPS_TYPES = ['Sales', 'Surveys']
 
@@ -7,7 +8,7 @@ geo_dbs = geo_index_dbs()
 
 sql_query_template = '''
 if OBJECT_ID('[geographyIndex_{destination_allgeos}_AllGeos].[qa].[tab_matchPair{comps_type}CS_{curr_allgeos}_{prev_allgeos}]') IS NOT NULL
-	DROP TABLE [geographyIndex_{destination_allgeos}_AllGeos].[qa].[tab_matchPair{comps_type}CS_{curr_allgeos}_{prev_allgeos}]
+    DROP TABLE [geographyIndex_{destination_allgeos}_AllGeos].[qa].[tab_matchPair{comps_type}CS_{curr_allgeos}_{prev_allgeos}]
 
 SELECT new.*
 INTO [geographyIndex_{destination_allgeos}_AllGeos].[qa].[tab_matchPair{comps_type}CS_{curr_allgeos}_{prev_allgeos}]
@@ -27,24 +28,25 @@ def create_math_pair_samples(destination_allgeos, comps_type, phase_id):
         comps_type=comps_type,
         phase_id=phase_id,
     )
-    print(f'Creating sample in {destination_allgeos} for {comps_type}')
+    logger.info(f'Creating sample in {destination_allgeos} for {comps_type}')
     # TODO: Add sql runner call
-    print(sql_query)
+    logger.info(sql_query)
+    lon_sql_06_geoindexapp_runner().execute(sql_query)
 
 
-def create_all_samples():
+def create_all_samples(phase_id):
     for comps_type in COMPS_TYPES:
         create_math_pair_samples(
             destination_allgeos=geo_dbs['allgeos'].current,
             comps_type=comps_type,
-            phase_id=233,
+            phase_id=phase_id,
         )
         create_math_pair_samples(
             destination_allgeos=geo_dbs['allgeos'].previous,
             comps_type=comps_type,
-            phase_id=233,
+            phase_id=phase_id,
         )
 
 
 if __name__ == '__main__':
-    create_all_samples()
+    create_all_samples(234)
