@@ -141,6 +141,21 @@ class SQLQueryRunner:
             RECOVERY;
         '''
 
+    def list_databases(self):
+        sql_query = '''
+            SELECT [name]
+            FROM sys.databases
+            WHERE database_id > 4;
+        '''
+        result = self.read(sql_query)
+        return result['name'].values
+
+    def drop_database(self, database_name):
+        sql_query = f'DROP DATABASE {database_name};'
+        # TODO: Add sql runner call
+        print(sql_query)
+        logger.info(f'Dropping database {database_name} on server {self.connection.server}')
+
     def _default_path_for_file(self, file_type):
         if file_type == 'L':
             return self.default_log_path
@@ -205,3 +220,5 @@ sql_runners = {
 if __name__ == '__main__':
 
     restore_file = r'\\lon-sql-01\dbrepository\nhbc\NHBC_v208.bak'
+
+    print(lon_sql_04_runner().list_databases())
