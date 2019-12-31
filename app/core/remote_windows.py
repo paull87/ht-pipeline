@@ -45,7 +45,7 @@ class RemoteSession:
         target_file = os.path.join(destination, file_name)
         cmd = f'dir {target_file}'
         result = self.run_cmd(cmd)
-        return result.std_err.decode("utf-8") != 'File Not Found'
+        return 'File Not Found' not in result.std_err.decode("utf-8")
 
 
 def split_files(file_string):
