@@ -14,7 +14,7 @@ def get_spark_context(workers="*", driver_memory=None, executor_memory=None):
 
     jars = [f for f in files if f.lower().endswith(".jar")]
 
-    extra_class_path = ";".join([os.join(jar_dir, j) for j in jars])
+    extra_class_path = ";".join([os.path.join(jar_dir, j) for j in jars])
 
     # setup spark context
     conf = SparkConf().setMaster(f"local[{workers}]") \
