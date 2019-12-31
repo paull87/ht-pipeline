@@ -86,7 +86,7 @@ NHBC_SOURCE_DIR = 'S:\\HOMETRACK_ROOT\\Techdev\\Raw Data\\020_NHBCNewBuildDatase
 # BULK_TEST_REPORT_DIRECTORY = (
 #     r'S:\HOMETRACK_ROOT\Hometrack\Analytics\Bulk_Tests\Comparables Build QA Reports\{month}\v{version}'
 # )
-BULK_TEST_REPORT_DIRECTORY = r'D:\Users\plucas\Downloads\{month}\v{version}'
+BULK_TEST_REPORT_DIRECTORY = r'S:\HOMETRACK_ROOT\Hometrack\Analytics\Bulk_Tests\Comparables Build QA Reports\{month}\v{version}'
 
 
 BULK_TEST_REPORTS = {
