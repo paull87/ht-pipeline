@@ -1,9 +1,10 @@
-from app.core.sql import lon_sql_06_geoindexapp_runner
+from app.core.sql import get_sql_runner
 from collections import namedtuple
 
 GeoDB = namedtuple('GeoDB', 'current previous')
 
 DB_TYPES = ['pcl', '20cc', 'allgeos']
+LON_SQL_06_SQL_RUNNER = get_sql_runner('lon-sql-06')
 
 
 def get_database_names(db_type):
@@ -13,7 +14,7 @@ def get_database_names(db_type):
         WHERE LOWER([name]) LIKE 'geographyindex[_]%[_]{db_type}'
         ORDER BY [name];
     '''
-    return lon_sql_06_geoindexapp_runner().read(query)['name'].values
+    return LON_SQL_06_SQL_RUNNER.read(query)['name'].values
 
 
 def geo_index_dbs():

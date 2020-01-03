@@ -6,12 +6,14 @@ import datetime
 from requests_ntlm import HttpNtlmAuth
 from app.settings.secrets import USER_NAME, PASSWORD
 from app.settings.envs import GEO_LEVELS, GEO_INDEX_QA_REPORT_DIRECTORY, GEO_INDEX_QA_REPORT_FILE_FORMAT, GEO_INDEX_QA_REPORT_URL
-from app.core.sql import lon_sql_06_geoindexapp_runner
+from app.core.sql import get_sql_runner
 from app.core.logger import logger
 
 
 # Used as default if no month  is passed to the process
 current_month = datetime.datetime.now().strftime('%Y-%m')
+
+LON_SQL_06_SQL_RUNNER = get_sql_runner('lon-sql-06')
 
 PCDPDA_EXTRA_SQL = '''
 WITH cte as
@@ -73,7 +75,7 @@ def download_report(destination_file, geo_level, curr_allgeos, prev_allgeos, cur
 
 
 def get_extra_report_data(curr_allgeos):
-    return lon_sql_06_geoindexapp_runner().read(PCDPDA_EXTRA_SQL.format(curr_allgeos=curr_allgeos))
+    return LON_SQL_06_SQL_RUNNER.read(PCDPDA_EXTRA_SQL.format(curr_allgeos=curr_allgeos))
 
 
 def format_excel_sheet_columns(sheet):

@@ -1,6 +1,8 @@
-from app.core.sql import lon_sql_06_geoindexapp_runner
+from app.core.sql import get_sql_runner
 from app.process.geo_index.db_versions import geo_index_dbs
 from app.core.logger import logger
+
+LON_SQL_06_SQL_RUNNER = get_sql_runner('lon-sql-06')
 
 COMPS_TYPES = ['Sales', 'Surveys']
 
@@ -31,7 +33,7 @@ def create_math_pair_samples(destination_allgeos, comps_type, phase_id):
     logger.info(f'Creating sample in {destination_allgeos} for {comps_type}')
     # TODO: Add sql runner call
     logger.info(sql_query)
-    lon_sql_06_geoindexapp_runner().execute(sql_query)
+    LON_SQL_06_SQL_RUNNER.execute(sql_query)
 
 
 def create_all_samples(phase_id):

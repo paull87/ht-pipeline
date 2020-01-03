@@ -13,10 +13,14 @@ LON_SQL_06 = 'LON-SQL-06'
 LON_SQL_06_GEOINDEXAPP = r'LON-SQL-06\GeoindexApp'
 
 SERVERS = {
-    'lon-sql-01': LON_SQL_01,
     'dev-sql-01': DEV_SQL_01,
-    'lon-sql-06': LON_SQL_06_GEOINDEXAPP,
+    'lon-dwn-01': LON_DWN_01,
+    'lon-sql-01': LON_SQL_01,
+    'lon-sql-02': LON_SQL_02_SQLCEN,
     'lon-sql-03': LON_SQL_03,
+    'lon-sql-04': LON_SQL_04,
+    'lon-sql-06': LON_SQL_06_GEOINDEXAPP,
+    'lon-sql-10': LON_SQL_10,
 }
 
 ADHOC_FILE_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'adhoc_files')

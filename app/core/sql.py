@@ -5,7 +5,7 @@ import datetime
 import os
 import time
 from contextlib import contextmanager
-from app.settings.envs import LON_SQL_03, LON_SQL_02_SQLCEN, LON_SQL_04, LON_SQL_01_SOURCEBUILD, LON_SQL_06_GEOINDEXAPP, DEV_SQL_01
+from app.settings.envs import SERVERS
 from app.core.logger import logger
 
 connection_strings = {
@@ -177,48 +177,12 @@ class SQLQueryRunner:
         return ','.join(files)
 
 
-def dev_sql_01_runner():
-    connection = SQLConnection('sqlserver', DEV_SQL_01, 'master')
+def get_sql_runner(server):
+    server_name = SERVERS[server]
+    connection = SQLConnection('sqlserver', server_name, 'master')
     return SQLQueryRunner(connection)
-
-
-def lon_sql_01_sourcebuild_runner():
-    connection = SQLConnection('sqlserver', LON_SQL_01_SOURCEBUILD, 'master')
-    return SQLQueryRunner(connection)
-
-
-def lon_sql_03_runner():
-    connection = SQLConnection('sqlserver', LON_SQL_03, 'master')
-    return SQLQueryRunner(connection)
-
-
-def lon_sql_02_sqlcen_runner():
-    connection = SQLConnection('sqlserver', LON_SQL_02_SQLCEN, 'master')
-    return SQLQueryRunner(connection)
-
-
-def lon_sql_06_geoindexapp_runner():
-    connection = SQLConnection('sqlserver', LON_SQL_06_GEOINDEXAPP, 'master')
-    return SQLQueryRunner(connection)
-
-
-def lon_sql_04_runner():
-    connection = SQLConnection('sqlserver', LON_SQL_04, 'master')
-    return SQLQueryRunner(connection)
-
-
-sql_runners = {
-    'lon_sql_01': lon_sql_01_sourcebuild_runner(),
-    'lon-sql-02': lon_sql_02_sqlcen_runner(),
-    'lon-sql-03': lon_sql_03_runner(),
-    'lon-sql-04': lon_sql_04_runner(),
-    'lon-sql-06': lon_sql_06_geoindexapp_runner(),
-    'dev-sql-01': dev_sql_01_runner(),
-}
 
 
 if __name__ == '__main__':
-
-    restore_file = r'\\lon-sql-01\dbrepository\nhbc\NHBC_v208.bak'
-
-    print(lon_sql_04_runner().list_databases())
+    sql_runner = get_sql_runner('lon-sql-04')
+    print(sql_runner.list_databases())

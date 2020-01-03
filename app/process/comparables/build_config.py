@@ -1,7 +1,7 @@
 import os
 import datetime
 import argparse
-from app.core.sql import lon_sql_02_sqlcen_runner
+from app.core.sql import get_sql_runner
 from app.settings.envs import ADHOC_FILE_PATH
 
 '''
@@ -13,7 +13,7 @@ python -m app.process.comparables.build_config --action build ^
 --asof 20191201 ^
 --os_version 84 ^
 --based_on_version 678 ^
---compared_to_version 680 ^
+--compared_to_version 682 ^
 --rebuild False ^
 --update False ^
 --geo_service False
@@ -27,7 +27,7 @@ python -m app.process.comparables.build_config -a show
 Run current config -
 
 python -m app.process.comparables.build_config --action run ^
---description "Comps Build - Dec 2019 - Dec Enhancement Capital IX, Rental NRA and Neigh" ^
+--description "Comps Build - Dec 2019 - Dec Enhancement PPSM and Yield Rental Changes" ^
 --is_release False
 
 '''
@@ -37,6 +37,9 @@ python -m app.process.comparables.build_config --action run ^
 # Used as default if no month  is passed to the process
 current_month = datetime.datetime.now().strftime('%Y%m%d')
 
+
+LON_SQL_04_SQL_RUNNER = get_sql_runner('lon-sql-04')
+LON_SQL_02_SQL_RUNNER = get_sql_runner('lon-sql-02')
 CONFIG_FILE = os.path.join(ADHOC_FILE_PATH, 'comps_build_config')
 
 CONFIG_TEMPLATE = '''<buildConfiguration>
@@ -97,7 +100,7 @@ def str_to_bool(v):
 
 def get_bulk_test_id(version, bulk_test_type):
     """Returns the latest bulk test id for the given version and bulk test type."""
-    result = lon_sql_02_sqlcen_runner().read(bulk_test_id_sql.format(version=version, bulk_test_type=bulk_test_type))
+    result = LON_SQL_02_SQL_RUNNER.read(bulk_test_id_sql.format(version=version, bulk_test_type=bulk_test_type))
     if not result.empty:
         return result.loc[0, 'bulkTestId']
 
@@ -174,6 +177,29 @@ def delete_config():
         os.remove(CONFIG_FILE)
 
 
+def drop_raw_comps_databases():
+    for database in LON_SQL_04_SQL_RUNNER.list_databases():
+        if database.startswith('rawComparables_'):
+            LON_SQL_04_SQL_RUNNER.drop_database(database)
+
+
+def comps_to_delete(comps_database, versions_to_keep):
+    for version in versions_to_keep:
+        if comps_database.endswith(str(version)):
+            return False
+    return True
+
+
+def drop_comps_databases(versions_to_keep):
+    for database in get_comps_databases():
+        if comps_to_delete(database, versions_to_keep):
+            LON_SQL_04_SQL_RUNNER.drop_database(database)
+
+
+def get_comps_databases():
+    return [d for d in LON_SQL_04_SQL_RUNNER.list_databases() if d.startswith('Comparables_')]
+
+
 def run_build(build_description, is_release_build, dry_run=False):
     sql = run_build_sql.format(
         build_type_id=BUILD_TYPE_ID,
@@ -212,6 +238,9 @@ def process_action(
 
 
 if __name__ == '__main__':
+
+    drop_raw_comps_databases()
+    drop_comps_databases((678, 681))
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
