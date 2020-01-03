@@ -23,19 +23,29 @@ class SQLConnection:
 
     @contextmanager
     def connect(self):
+        connection = None
         try:
             connection = self.engine.connect()
             yield connection
+        except Exception as e:
+            logger.error(f'Unable to connect to {self.server}: e')
+            raise e
         finally:
-            connection.close()
+            if connection:
+                connection.close()
 
     @contextmanager
     def raw_connect(self):
+        connection = None
         try:
             connection = self.engine.raw_connection()
             yield connection
+        except Exception as e:
+            logger.error(f'Unable to connect to {self.server}: e')
+            raise e
         finally:
-            connection.close()
+            if connection:
+                connection.close()
 
     def create_engine(self):
         conn_string = connection_strings[self.odbc]
