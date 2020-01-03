@@ -16,6 +16,7 @@ SERVERS = {
     'lon-sql-01': LON_SQL_01,
     'dev-sql-01': DEV_SQL_01,
     'lon-sql-06': LON_SQL_06_GEOINDEXAPP,
+    'lon-sql-03': LON_SQL_03,
 }
 
 ADHOC_FILE_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'adhoc_files')
@@ -26,6 +27,7 @@ DATA_ENGINEERING_CHANNEL = '#ht-data-engineers'
 # Backup File Directories
 LON_SQL_04_DB_BACKUPS = 'D:\MSSQL\BACKUP'
 LON_SQL_06_DB_BACKUPS = 'E:\MSSQL\Backup'
+LON_SQL_03_DB_BACKUPS = 'D:\BACKUP'
 
 LON_SQL_01_RAW_COMPS_BACKUPS = r'\\lon-sql-01\DBRepository\rawComparables\2019'
 LON_SQL_01_COMPS_BACKUPS = r'\\lon-sql-01\DBRepository\comparables\2019'
@@ -50,6 +52,12 @@ BACKUP_DIRS = {
         'raw_comps': LON_SQL_06_DB_BACKUPS,
         'comps': LON_SQL_06_DB_BACKUPS,
         'os_data': LON_SQL_06_DB_BACKUPS,
+    },
+    'lon-sql-03': {
+        'nhbc': LON_SQL_03_DB_BACKUPS,
+        'raw_comps': LON_SQL_03_DB_BACKUPS,
+        'comps': LON_SQL_03_DB_BACKUPS,
+        'os_data': LON_SQL_03_DB_BACKUPS,
     }
 }
 
@@ -62,6 +70,7 @@ BACKUP_REGEXS = {
     'nhbc': NHBC_REGEX,
     'raw_comps': RAW_COMPS_REGEX,
     'os_data': OS_DATA_REGEX,
+    'comps': COMPS_REGEX,
 }
 
 
