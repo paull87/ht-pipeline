@@ -35,9 +35,9 @@ def load_raw_plots(month):
 
 def load_processed_plots(month):
     month_format = f'{month[:4]}-{month[-2:]}'
-    url = TRANSFORMED_S3_URL.format(month_format)
+    url = TRANSFORMED_S3_URL.format(month=month_format)
     logger.info(f'Loading {url}')
-    df = SQL_CONTEXT.read.options(DF_OPTIONS).csv(url)
+    df = SQL_CONTEXT.read.options(**DF_OPTIONS).csv(url)
 
     # sometimes there are duplicate PLOT_IDs so discard the duplicates here
     window = Window.partitionBy(df['PLOT_ID']).orderBy(df.columns)
@@ -67,9 +67,9 @@ def get_plots_with_projects(plots_df, projects_df):
 
 def write_processed_plots_to_s3(month, plots_df):
     month_format = f'{month[:4]}-{month[-2:]}'
-    url = TRANSFORMED_S3_URL.format(month_format)
+    url = TRANSFORMED_S3_URL.format(month=month_format)
     logger.info(f'Writing to S3 {url}')
-    plots_df.repartition(1).write.options(DF_OPTIONS).csv(path=url, mode="overwrite")
+    plots_df.repartition(1).write.options(**DF_OPTIONS).csv(path=url, mode="overwrite")
 
 
 def process_initial_data(month):
