@@ -16,6 +16,12 @@ def copy_backups(remote_server, backup_regex, source_directory, target_directory
         )
 
 
+def delete_backups(remote_server, backup_file):
+    session = RemoteSession(remote_server, (secrets.USER_NAME, secrets.PASSWORD))
+    logger.info(f'Deleting file {backup_file}')
+    session.delete_file(file=backup_file)
+
+
 def find_backups(file_regex, files):
     for file in files:
         if re.search(file_regex, file):

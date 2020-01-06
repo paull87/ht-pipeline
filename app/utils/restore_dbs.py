@@ -1,5 +1,5 @@
 from app.core.sql import get_sql_runner
-from app.utils.move_backups import get_latest_backup, copy_backups
+from app.utils.move_backups import get_latest_backup, copy_backups, delete_backups
 from app.settings.envs import BACKUP_DIRS, BACKUP_REGEXS, SERVERS
 import os
 
@@ -22,8 +22,16 @@ def restore_db(server, database, database_name, version, copy_file_from=None):
     full_backup_path = os.path.join(backup_directory, backup_file_name)
     sql_runner = get_sql_runner(server)
     sql_runner.restore_db(database_name, full_backup_path)
+    if copy_file_from:
+        delete_backups(
+            remote_server=SERVERS[server],
+            backup_file=full_backup_path,
+        )
 
 
 if __name__ == '__main__':
-    restore_db('dev-sql-01', 'raw_comps', 'PL_TEST_raw_comps', 679)
+    restore_db('dev-sql-01', 'gdw', 'GDW3', 227)
     #restore_db('lon-sql-03', 'comps', 'Comparables', 679, copy_file_from='lon-sql-01')
+    #restore_db('lon-sql-02', 'raw_comps', 'rawComparables', 679, copy_file_from='lon-sql-01')
+    #restore_db('lon-sql-02', 'gdw', 'GDW3', 227, copy_file_from='lon-sql-01')
+    #restore_db('lon-sql-02', 'nhbc', 'NHBC', 209, copy_file_from='lon-sql-01')
