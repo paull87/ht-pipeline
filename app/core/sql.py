@@ -79,6 +79,7 @@ class SQLQueryRunner:
                 pass
 
     def restore_db(self, database, backup_file, stats=5):
+        self.drop_database(database)
         restore_query = self.restore_database_query(database, backup_file)
         logger.info(f'Running restore query:\n{restore_query}')
         restore_thread = threading.Thread(target=self.restore, args=(restore_query,))
@@ -90,6 +91,7 @@ class SQLQueryRunner:
             restore_state = self.get_restore_state(database)
             if not restore_state:
                 percent_complete = 100
+                time.sleep(5)
                 continue
             current_percent_complete = restore_state.percent_complete
             seconds_to_complete = restore_state.seconds_to_complete
@@ -161,9 +163,15 @@ class SQLQueryRunner:
         return result['name'].values
 
     def drop_database(self, database_name):
-        sql_query = f'DROP DATABASE {database_name};'
+        sql_query = f'''
+        IF (SELECT COUNT(1) FROM sys.databases WHERE [name] = '{database_name}') > 0
+        BEGIN
+            ALTER DATABASE [{database_name}] SET  SINGLE_USER WITH ROLLBACK IMMEDIATE;
+            DROP DATABASE [{database_name}];
+        END;
+        '''
         # TODO: Add sql runner call
-        print(sql_query)
+        self.execute(sql_query)
         logger.info(f'Dropping database {database_name} on server {self.connection.server}')
 
     def _default_path_for_file(self, file_type):
