@@ -12,6 +12,21 @@ connection_strings = {
     'sqlserver': 'mssql+pyodbc://{server_name}/{db_name}?driver=SQL+Server'
 }
 
+PACKAGE_STATUS = {
+    1: 'created',
+    2: 'running',
+    3: 'canceled',
+    4: 'failed',
+    5: 'pending',
+    6: 'ended unexpectedly',
+    7: 'succeeded',
+    8: 'stopping',
+    9: 'completed',
+}
+
+PACKAGE_FAILURE = ['canceled', 'failed', 'ended unexpectedly']
+
+PACKAGE_SUCCESS = ['succeeded', 'completed']
 
 class SQLConnection:
     def __init__(self, odbc, server, database):
@@ -174,6 +189,52 @@ class SQLQueryRunner:
         self.execute(sql_query)
         logger.info(f'Dropping database {database_name} on server {self.connection.server}')
 
+    def latest_package_operation_id(self, package_name):
+        sql_query = f'''
+            SELECT TOP 1 o.operation_id 
+            FROM SSISDB.catalog.executions e
+            INNER JOIN SSISDB.catalog.operations o
+                ON e.process_id = o.process_id
+            WHERE e.package_name = N'{package_name}'
+            ORDER BY 1 DESC;
+        '''
+        result = self.read(sql_query)
+        return result.loc[0, 'operation_id']
+
+    def package_operation_status(self, operation_id):
+        sql_query = f'''
+            SELECT [status] 
+            FROM SSISDB.catalog.operations
+            WHERE operation_id = {operation_id};
+        '''
+        result = self.read(sql_query)
+        status_id =  result.loc[0, 'status']
+        return PACKAGE_STATUS[status_id]
+
+    def monitor_package_status(self, operation_id):
+        package_status = self.package_operation_status(operation_id)
+        while package_status not in PACKAGE_SUCCESS:
+            print(package_status)
+            if package_status in PACKAGE_FAILURE:
+                self.raise_package_error(operation_id, package_status)
+            time.sleep(30)
+            package_status = self.package_operation_status(operation_id)
+
+    def package_errors(self, operation_id):
+        sql_query = f'''
+            SELECT [message]
+            FROM SSISDB.catalog.operation_messages 
+            WHERE operation_id = {operation_id}
+            AND message_type = 120;
+            '''
+        result = self.read(sql_query)
+        return '\n'.join(result['message'].values)
+
+    def raise_package_error(self, operation_id, package_status):
+        package_error = self.package_errors(operation_id)
+        error_message = f'Package Operation {operation_id} {package_status}:\n{package_error}'
+        raise Exception(error_message)
+
     def _default_path_for_file(self, file_type):
         if file_type == 'L':
             return self.default_log_path
@@ -202,5 +263,11 @@ def get_sql_runner(server):
 
 
 if __name__ == '__main__':
-    sql_runner = get_sql_runner('lon-sql-04')
+    sql_runner = get_sql_runner('lon-sql-02')
     print(sql_runner.list_databases())
+
+    op_id = sql_runner.latest_package_operation_id('Package1.dtsx')
+
+    print(op_id)
+
+    sql_runner.monitor_package_status(op_id)
