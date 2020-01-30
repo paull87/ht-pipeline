@@ -36,10 +36,10 @@ LON_SQL_06_DB_BACKUPS = 'E:\MSSQL\Backup'
 LON_SQL_03_DB_BACKUPS = 'D:\BACKUP'
 LON_SQL_02_DB_BACKUPS = 'E:\MSSQL\Backup'
 
-LON_SQL_01_RAW_COMPS_BACKUPS = r'\\lon-sql-01\DBRepository\rawComparables\2019'
-LON_SQL_01_COMPS_BACKUPS = r'\\lon-sql-01\DBRepository\comparables\2019'
+LON_SQL_01_RAW_COMPS_BACKUPS = r'\\lon-sql-01\DBRepository\rawComparables\2020'
+LON_SQL_01_COMPS_BACKUPS = r'\\lon-sql-01\DBRepository\comparables\2020'
 LON_SQL_01_NHBC_BACKUPS = r'\\lon-sql-01\DBRepository\nhbc'
-LON_SQL_01_OS_DATA_BACKUPS = r'\\lon-sql-01\DBRepository\os_data\2019'
+LON_SQL_01_OS_DATA_BACKUPS = r'\\lon-sql-01\DBRepository\os_data\2020'
 LON_SQL_01_GDW_BACKUPS = r'\\lon-sql-01\DBRepository\gdw3'
 
 BACKUP_DIRS = {
@@ -82,6 +82,13 @@ BACKUP_DIRS = {
         'comps': LON_SQL_02_DB_BACKUPS,
         'os_data': LON_SQL_02_DB_BACKUPS,
         'gdw': LON_SQL_02_DB_BACKUPS,
+    },
+    'lon-sql-04': {
+        'nhbc': LON_SQL_04_DB_BACKUPS,
+        'raw_comps': LON_SQL_04_DB_BACKUPS,
+        'comps': LON_SQL_04_DB_BACKUPS,
+        'os_data': LON_SQL_04_DB_BACKUPS,
+        'gdw': LON_SQL_04_DB_BACKUPS,
     }
 }
 
