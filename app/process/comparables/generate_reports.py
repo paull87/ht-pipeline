@@ -3,13 +3,18 @@ import os
 import datetime
 import argparse
 from requests_ntlm import HttpNtlmAuth
+
+from app.core.slack_client import send_message
 from app.settings.secrets import USER_NAME, PASSWORD
-from app.settings.envs import BULK_TEST_REPORT_DIRECTORY, BULK_TEST_REPORTS
+from app.settings.envs import BULK_TEST_REPORTS
 from app.core.logger import logger
 from app.process.comparables.build_config import get_bulk_test_ids
 
 # Used as default if no month  is passed to the process
 current_month = datetime.datetime.now().strftime('%Y-%m')
+
+
+BULK_TEST_REPORT_DIRECTORY = r"D:\Users\plucas\Downloads\{month}\v{version}"
 
 
 def get_report_file(url):
@@ -61,6 +66,10 @@ def download_all_reports(current_version, compare_version, month=current_month):
             destination_file=destination_file,
             report_url=report_url
         )
+    send_message(
+        '#pl-test',
+        f'QA reports for Comps Build v{current_version} sign-off are available here:\n{directory}'
+    )
 
 
 if __name__ == '__main__':
