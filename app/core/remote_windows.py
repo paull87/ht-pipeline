@@ -1,10 +1,11 @@
 import winrm
 import os
 from app.core.logger import logger
+from app.settings import secrets
 
 
 class RemoteSession:
-    def __init__(self, server, auth):
+    def __init__(self, server, auth=(secrets.USER_NAME, secrets.PASSWORD)):
         self._server = server
         self._auth = auth
 
@@ -46,6 +47,12 @@ class RemoteSession:
         cmd = f'dir {target_file}'
         result = self.run_cmd(cmd)
         return 'File Not Found' not in result.std_err.decode("utf-8")
+
+    def run_dtsx(self, package_path, ssisdb=True, **params):
+        dtsx_type = '/ISServer' if ssisdb else '/F'
+        cmd = f'dtexec {dtsx_type} "{package_path}" /Server "{self._server}" /Rep P /Par "$ServerOption::SYNCHRONIZED(Boolean)";True'
+        result = self.run_cmd(cmd)
+        return result
 
 
 def split_files(file_string):
