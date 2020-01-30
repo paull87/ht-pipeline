@@ -1,6 +1,5 @@
 import logging
 import sys
-import inspect
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
