@@ -26,4 +26,4 @@ def move_backups(version):
 
 
 if __name__ == '__main__':
-    move_backups(681)
+    move_backups(688)

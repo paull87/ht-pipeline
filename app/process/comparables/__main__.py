@@ -1,5 +1,5 @@
 from app.process.comparables.build_config import build_config, show_config
-from app.process.comparables.run_build import run, latest_comps_build_version, config_compare_to_version
+from app.process.comparables.run_build import run, latest_comps_build_version, config_compare_to_version, monitor_build
 from app.process.comparables.generate_reports import download_all_reports
 import argparse
 import datetime
@@ -12,11 +12,11 @@ Build config -
 python -m app.process.comparables --action config ^
 --asof 20200101 ^
 --os_version 84 ^
---based_on_version 685 ^
---compared_to_version 684 ^
+--based_on_version 684 ^
+--compared_to_version 687 ^
 --rebuild False ^
---update True ^
---geo_service True
+--update False ^
+--geo_service False
 
 
 Show current config -
@@ -27,8 +27,8 @@ python -m app.process.comparables -a show
 Run current config -
 
 python -m app.process.comparables --action run ^
---description "Comps Build - Jan 2020 - Jan Release" ^
---is_release True
+--description "Comps Build - Jan 2020 - geospatial index for nra and tall building column" ^
+--is_release False
 
 '''
 
@@ -66,6 +66,8 @@ def process_action(
     elif action == 'run':
         run(build_description, is_release_build)
         download_all_reports(latest_comps_build_version(), config_compare_to_version())
+    elif action == 'monitor':
+        monitor_build()
 
 
 if __name__ == '__main__':
@@ -77,7 +79,7 @@ if __name__ == '__main__':
         dest='action',
         help='Action to build config, show config, or run comps config',
         required=True,
-        choices=['config', 'show', 'run'],
+        choices=['config', 'show', 'run', 'monitor'],
     )
     parser.add_argument(
         '-as',

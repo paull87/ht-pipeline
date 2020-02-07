@@ -37,8 +37,7 @@ ORDER BY
 
 BUILD_TYPE_ID = 1
 BUILD_CONTROLLER_ID = 24
-BUILD_JOB_NAME = 'runProductionComparablesBuildxx'
-
+BUILD_JOB_NAME = '1_comparablesBuildController.dtsx'
 
 
 def get_bulk_test_id(version, bulk_test_type):

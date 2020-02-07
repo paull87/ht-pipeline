@@ -214,7 +214,6 @@ class SQLQueryRunner:
     def monitor_package_status(self, operation_id):
         package_status = self.package_operation_status(operation_id)
         while package_status not in PACKAGE_SUCCESS:
-            print(package_status)
             if package_status in PACKAGE_FAILURE:
                 self.raise_package_error(operation_id, package_status)
             time.sleep(30)

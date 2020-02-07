@@ -7,10 +7,11 @@ from app.process.comparables.build_config import current_config, delete_config, 
 from xml.etree import ElementTree
 
 comps_server = 'lon-sql-04'
+lon_sql_02 = 'lon-sql-02'
 
 LON_SQL_04_SQL_RUNNER = get_sql_runner(comps_server)
-LON_SQL_02_SQL_RUNNER = get_sql_runner('lon-sql-02')
-LON_SQL_04_Session = RemoteSession(comps_server)
+LON_SQL_02_SQL_RUNNER = get_sql_runner(lon_sql_02)
+LON_SQL_02_SESSION = RemoteSession(lon_sql_02)
 
 
 run_build_sql = '''
@@ -31,8 +32,7 @@ BUILD_JOB_NAME = '1_comparablesBuildController.dtsx'
 def drop_raw_comps_databases():
     for database in LON_SQL_04_SQL_RUNNER.list_databases():
         if database.startswith('rawComparables_'):
-            print(database)
-            #LON_SQL_04_SQL_RUNNER.drop_database(database)
+            LON_SQL_04_SQL_RUNNER.drop_database(database)
 
 
 def comps_to_delete(comps_database, versions_to_keep):
@@ -45,10 +45,7 @@ def comps_to_delete(comps_database, versions_to_keep):
 def drop_comps_databases(versions_to_keep):
     for database in get_comps_databases():
         if comps_to_delete(database, versions_to_keep):
-            print(database)
-            pass
-            # TODO: add sql run
-            #LON_SQL_04_SQL_RUNNER.drop_database(database)
+            LON_SQL_04_SQL_RUNNER.drop_database(database)
 
 
 def get_comps_databases():
@@ -89,23 +86,28 @@ def prepare_build():
 
 
 def start_build(sql):
+    sql = sql.replace('\n', ' ')
     cmd = f'sqlcmd -S {LON_SQL_02_SQL_RUNNER.connection.server} -Q "{sql}"'
-    print(cmd)
-    # TODO: add remote session call
+    LON_SQL_02_SESSION.run_cmd(cmd)
     return latest_comps_build_version()
 
 
 def run_build(sql):
     current_build_version = start_build(sql)
+    monitor_build(current_build_version)
+
+
+def monitor_build(current_build_version=None):
+    current_build_version = current_build_version or latest_comps_build_version()
     send_message('#ht-compsbuild', f'Started Comps Build {current_build_version}')
     try:
         op_id = LON_SQL_04_SQL_RUNNER.latest_package_operation_id(BUILD_JOB_NAME)
         LON_SQL_04_SQL_RUNNER.monitor_package_status(op_id)
         logger.info(f'Comps Build {current_build_version} complete.')
-        send_message('#pl-test', f'Comps Build {current_build_version} completed successfully!')
+        send_message('#ht-compsbuild', f'Comps Build {current_build_version} completed successfully!')
     except Exception as e:
         logger.error(f'Comps Build {current_build_version} failed.\n{e}')
-        send_message('#pl-test', f'Comps Build {current_build_version} failed.\n{e}')
+        send_message('#ht-compsbuild', f'Comps Build {current_build_version} failed.\n{e}')
 
 
 def run(build_description, is_release_build, dry_run=False):
@@ -122,5 +124,3 @@ def run(build_description, is_release_build, dry_run=False):
     else:
         prepare_build()
         run_build(sql)
-        # Delete the config so it can't be accidentally used again.
-        delete_config()
