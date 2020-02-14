@@ -32,7 +32,19 @@ def strip_trailing_commas():
 if __name__ == '__main__':
     #strip_trailing_commas()
 
-    with open(file_path, 'r') as existing_file:
-        for line in existing_file.readlines():
-            if len(line.split('|')[-1]) > 2:
-                print(repr(line))
+    # with open(file_path, 'r') as existing_file:
+    #     for line in existing_file.readlines():
+    #         if len(line.split('|')[-1]) > 2:
+    #             print(repr(line))
+
+    with open(r"S:\HOMETRACK_ROOT\Techdev\Raw Data\251_SantanderViaLGSurvey\data\2019-12_LGSantander.csv",
+              'r') as file:
+        lines = file.readlines()
+        print(lines[0])
+        print(lines[0].replace('ï»¿', ''))
+
+    # with open(r"S:\HOMETRACK_ROOT\Techdev\Raw Data\202_RoyalBankOfScotlandViaLGSurvey\data\2019-12_LGRBOS.csv", 'r') as file:
+    #     with open(r"S:\HOMETRACK_ROOT\Techdev\Raw Data\202_RoyalBankOfScotlandViaLGSurvey\data\2019-12_LGRBOS_copy.csv", 'w') as new_file:
+    #         lines = file.readlines()
+    #         lines[0] = lines[0].replace('ï»¿', '')
+    #         new_file.writelines(lines)
