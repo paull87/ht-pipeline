@@ -10,13 +10,13 @@ Example usage -
 Build config -
 
 python -m app.process.comparables --action config ^
---asof 20200101 ^
+--asof 20200201 ^
 --os_version 84 ^
---based_on_version 684 ^
---compared_to_version 687 ^
+--based_on_version 688 ^
+--compared_to_version 688 ^
 --rebuild False ^
---update False ^
---geo_service False
+--update True ^
+--geo_service True
 
 
 Show current config -
@@ -27,8 +27,8 @@ python -m app.process.comparables -a show
 Run current config -
 
 python -m app.process.comparables --action run ^
---description "Comps Build - Jan 2020 - geospatial index for nra and tall building column" ^
---is_release False
+--description "Comps Build - Feb 2020 - Release Build" ^
+--is_release True
 
 '''
 

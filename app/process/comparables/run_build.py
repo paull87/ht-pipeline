@@ -5,6 +5,7 @@ from app.core.remote_windows import RemoteSession
 from app.process.comparables.build_config import current_config, delete_config, CONFIG_FILE
 
 from xml.etree import ElementTree
+import time
 
 comps_server = 'lon-sql-04'
 lon_sql_02 = 'lon-sql-02'
@@ -101,6 +102,7 @@ def monitor_build(current_build_version=None):
     current_build_version = current_build_version or latest_comps_build_version()
     send_message('#ht-compsbuild', f'Started Comps Build {current_build_version}')
     try:
+        time.sleep(10)
         op_id = LON_SQL_04_SQL_RUNNER.latest_package_operation_id(BUILD_JOB_NAME)
         LON_SQL_04_SQL_RUNNER.monitor_package_status(op_id)
         logger.info(f'Comps Build {current_build_version} complete.')
