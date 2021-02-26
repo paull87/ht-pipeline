@@ -1,5 +1,5 @@
 adal==1.2.2
-aiohttp==3.6.2
+aiohttp==3.7.4
 antlr4-python3-runtime==4.7.2
 applicationinsights==0.11.9
 argcomplete==1.10.0
