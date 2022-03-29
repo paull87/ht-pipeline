@@ -145,7 +145,7 @@ openpyxl==3.0.1
 packaging==19.2
 pandas==0.25.2
 pandocfilters==1.4.2
-paramiko==2.6.0
+paramiko==2.10.1
 parso==0.5.1
 pbr==5.4.3
 pickleshare==0.7.5
